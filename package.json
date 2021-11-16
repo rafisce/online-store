@@ -1,0 +1,41 @@
+{
+  "name": "online-store",
+  "version": "1.0.0",
+  "description": "website store",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node backend/server.js",
+    "server": "nodemon --watch backend --exec node --experimental-modules backend/server.js",
+    "client": "npm start --prefix frontend",
+    "dev": "concurrently \"npm run server\"\"npm run client\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rafisce/online-store.git"
+  },
+  "author": "rafi david",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rafisce/online-store/issues"
+  },
+  "homepage": "https://github.com/rafisce/online-store#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "concurrently": "^6.3.0",
+    "express": "^4.17.1",
+    "express-async-handler": "^1.2.0",
+    "is-empty": "^1.2.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.0.12",
+    "passport": "^0.5.0",
+    "passport-jwt": "^4.0.0",
+    "validator": "^13.7.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.2.0",
+    "eslint-plugin-react": "^7.27.0",
+    "nodemon": "^2.0.15"
+  }
+}
