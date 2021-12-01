@@ -5,18 +5,19 @@ import Product from "../models/productModel.js";
 
 const productRouter = express.Router();
 
-productRouter.post(
-  "/init",
-  expressAsyncHandler(async (req, res) => {
-    const products = await Product.insertMany(data.products);
-
-    res.send(products);
-  })
-);
 productRouter.get(
   "/",
   expressAsyncHandler(async (req, res) => {
     const products = await Product.find({});
+    res.send(products);
+  })
+);
+productRouter.post(
+  "/init",
+  expressAsyncHandler(async (req, res) => {
+    //await Product.remove({});
+    const products = await Product.insertMany(data.products);
+
     res.send(products);
   })
 );
