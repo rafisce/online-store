@@ -50,8 +50,8 @@ userRouter.post(
           isAdmin: user.isAdmin,
           token: generateToken(user),
         });
+        return;
       }
-      return;
     }
 
     res.status(401).send({ message: "אימייל או סיסמה שגויים" });

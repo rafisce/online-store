@@ -16,7 +16,7 @@ const HomeScreen = () => {
   console.log(products);
   return (
     <div>
-      <div class="row center">
+      <div className="row center">
         {loading ? (
           <LoadingBox></LoadingBox>
         ) : error ? (
