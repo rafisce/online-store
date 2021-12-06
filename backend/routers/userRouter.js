@@ -23,16 +23,14 @@ userRouter.post(
       password: bcrypt.hashSync(req.body.password, 8),
     });
 
-    const createdUser = user.save();
-
-    if (createdUser) {
-      res.send({
-        _id: createdUser._id,
-        name: createdUser.name,
-        email: createdUser.email,
-        isAdmin: createdUser.isAdmin,
-      });
-    }
+    const createdUser = await user.save();
+    res.send({
+      _id: createdUser._id,
+      name: createdUser.name,
+      email: createdUser.email,
+      isAdmin: createdUser.isAdmin,
+      token: generateToken(user),
+    });
   })
 );
 

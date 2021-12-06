@@ -1,24 +1,30 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { signin } from "../actions/userActions";
+import { register } from "../actions/userActions";
 import LoadingBox from "../components/LoadingBox";
 import MessageBox from "../components/MessageBox";
 
-const SigninScreen = (props) => {
+const RegisterScreen = (props) => {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
 
   const redirect = props.location.search
     ? props.location.search.split("=")[1]
     : "/";
-  const userSignin = useSelector((state) => state.userSignin);
-  const { userInfo, error, loading } = userSignin;
+  const userRegister = useSelector((state) => state.userRegister);
+  const { userInfo, error, loading } = userRegister;
 
   const dispatch = useDispatch();
   const submitHandler = (e) => {
     e.preventDefault();
-    dispatch(signin(email, password));
+    if (passwordConfirm !== password) {
+      alert("!סיסמאות לא תואמות");
+    } else {
+      dispatch(register(name, email, password));
+    }
   };
 
   useEffect(() => {
@@ -30,10 +36,20 @@ const SigninScreen = (props) => {
     <div>
       <form className="form" onSubmit={submitHandler}>
         <div>
-          <h1>התחברות</h1>
+          <h1>הרשמה</h1>
         </div>
         {loading && <LoadingBox />}
         {error && <MessageBox variant="danger">{error}</MessageBox>}
+        <div>
+          <label html="name">שם משתמש</label>
+          <input
+            type="text"
+            id="name"
+            placeholder="הכנס שם משתמש"
+            required
+            onChange={(e) => setName(e.target.value)}
+          ></input>
+        </div>
         <div>
           <label html="email">כתובת אימייל</label>
           <input
@@ -55,15 +71,25 @@ const SigninScreen = (props) => {
           ></input>
         </div>
         <div>
+          <label html="passwordConfirm">אשר סיסמה</label>
+          <input
+            type="password"
+            id="passwordConfirm"
+            placeholder="אשר סיסמה"
+            required
+            onChange={(e) => setPasswordConfirm(e.target.value)}
+          ></input>
+        </div>
+        <div>
           <label />
           <button className="primary block" type="submit">
-            התחבר
+            הירשם
           </button>
         </div>
         <div>
           <label />
           <div>
-            משתמש חדש? <Link to="/register">צור חשבון חדש</Link>
+            כבר יש לך חשבון? <Link to="/signin">התחבר</Link>
           </div>
         </div>
       </form>
@@ -71,4 +97,4 @@ const SigninScreen = (props) => {
   );
 };
 
-export default SigninScreen;
+export default RegisterScreen;
