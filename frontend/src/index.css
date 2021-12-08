@@ -128,6 +128,9 @@ a.brand {
   padding: 2.5rem;
   flex: 1 1 25rem;
 }
+.col-1_ {
+  flex: 1 1 25rem;
+}
 .col-2 {
   flex: 2 1 50rem;
 }
