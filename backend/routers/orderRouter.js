@@ -15,7 +15,7 @@ orderRouter.post(
       const order = new Order({
         orderItems: req.body.orderItems,
         shippingAddress: req.body.shippingAddress,
-        paymentMethod: req.body.paymentMethod,
+        //paymentMethod: req.body.paymentMethod,
         itemsPrice: req.body.itemsPrice,
         shippingPrice: req.body.shippingPrice,
         taxPrice: req.body.taxPrice,
@@ -24,9 +24,23 @@ orderRouter.post(
       });
 
       const createdOrder = await order.save();
+
       res
         .status(201)
         .send({ message: "הזמנה חדשה נוצרה", order: createdOrder });
+    }
+  })
+);
+
+orderRouter.get(
+  "/:id",
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const order = await Order.findById(req.params.id);
+    if (order) {
+      res.send(order);
+    } else {
+      res.status(404).send({ message: "הזמנה לא נמצאה" });
     }
   })
 );

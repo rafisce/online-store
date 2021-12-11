@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+
 const orderSchema = new mongoose.Schema(
   {
     orderItems: [
@@ -18,22 +19,17 @@ const orderSchema = new mongoose.Schema(
       fullName: { type: String, required: true },
       address: { type: String, required: true },
       city: { type: String, required: true },
-      country: { type: String, required: true },
       zipCode: { type: String, required: true },
+      country: { type: String, required: true },
     },
-    paymentMethod: { type: String, required: true },
+    //paymentMethod: { type: String, required: true },
     itemsPrice: { type: Number, required: true },
     shippingPrice: { type: Number, required: true },
     taxPrice: { type: Number, required: true },
     totalPrice: { type: Number, required: true },
-
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     isPaid: { type: Boolean, default: false },
-    paitAt: { type: Date },
+    paidAt: { type: Date },
     isDelivered: { type: Boolean, default: false },
     deliveredAt: { type: Date },
   },
@@ -41,6 +37,5 @@ const orderSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
-
 const Order = mongoose.model("Order", orderSchema);
 export default Order;

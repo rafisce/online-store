@@ -23,7 +23,7 @@ const ShippingAddressScreen = (props) => {
     dispatch(
       saveShippingAddress({ fullName, address, city, zipCode, country })
     );
-    props.history.push("/payment");
+    props.history.push("/placeorder");
   };
 
   return (

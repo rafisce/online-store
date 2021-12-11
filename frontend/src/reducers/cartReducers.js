@@ -1,5 +1,6 @@
 import {
   CART_ADD_ITEM,
+  CART_EMPTY,
   CART_REMOVE_ITEM,
   CART_SAVE_SHIPPING_ADDRESS,
 } from "../constants/cartConstants";
@@ -31,6 +32,9 @@ export const cartReducer = (state = { cartItems: [] }, action) => {
         ...state,
         shippingAddress: action.payload,
       };
+    case CART_EMPTY: {
+      return { ...state, cartItems: [] };
+    }
     default:
       return state;
   }
