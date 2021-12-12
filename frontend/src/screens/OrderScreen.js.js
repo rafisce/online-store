@@ -2,17 +2,24 @@ import Axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { detailsOrder } from "../actions/orderActions";
+import { detailsOrder, payOrder } from "../actions/orderActions";
 import LoadingBox from "../components/LoadingBox";
 import MessageBox from "../components/MessageBox";
 import { PayPalButton } from "react-paypal-button-v2";
+import { ORDER_PAY_RESET } from "../constants/orderConstants";
+import moment from "moment";
 
 const OrderScreen = (props) => {
   const orderId = props.match.params.id;
   const [sdkReady, setSdkReady] = useState(false);
   const orderDetails = useSelector((state) => state.orderDetails);
   const { loading, error, order } = orderDetails;
-
+  const orderPay = useSelector((state) => state.orderPay);
+  const {
+    loading: loadingPay,
+    error: errorPay,
+    success: successPay,
+  } = orderPay;
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -27,7 +34,8 @@ const OrderScreen = (props) => {
       };
       document.body.appendChild(script);
     };
-    if (!order) {
+    if (!order || successPay || (order && order._id !== orderId)) {
+      dispatch({ type: ORDER_PAY_RESET });
       dispatch(detailsOrder(orderId));
     } else {
       if (!order.isPaid) {
@@ -38,9 +46,11 @@ const OrderScreen = (props) => {
         }
       }
     }
-  }, [dispatch, order, orderId]);
+  }, [dispatch, order, orderId, successPay]);
 
-  const successPaymentHandler = () => {};
+  const successPaymentHandler = (paymentResult) => {
+    dispatch(payOrder(order, paymentResult));
+  };
   return loading ? (
     <LoadingBox></LoadingBox>
   ) : error ? (
@@ -64,6 +74,31 @@ const OrderScreen = (props) => {
                   {order.shippingAddress.country}
                   <br />
                 </p>
+                {order.isDelivered ? (
+                  <MessageBox variant="success">
+                    נשלח ב -{" "}
+                    {moment(new Date(order.deliveredAt), "LLLL", "he").format(
+                      "HH:mm DD/MM/YYYY"
+                    )}
+                  </MessageBox>
+                ) : (
+                  <MessageBox variant="danger">לא נשלח</MessageBox>
+                )}
+              </div>
+            </li>
+            <li>
+              <div className="card card-body">
+                <h2>תשלום</h2>
+                {order.isPaid ? (
+                  <MessageBox variant="success">
+                    שולם ב -{" "}
+                    {moment(new Date(order.paidAt), "LLLL", "he").format(
+                      "HH:mm DD/MM/YYYY"
+                    )}
+                  </MessageBox>
+                ) : (
+                  <MessageBox variant="danger">לא שולם</MessageBox>
+                )}
               </div>
             </li>
             <li>
@@ -138,10 +173,16 @@ const OrderScreen = (props) => {
                   {!sdkReady ? (
                     <LoadingBox></LoadingBox>
                   ) : (
-                    <PayPalButton
-                      amount={order.totalPrice}
-                      onSuccess={successPaymentHandler}
-                    ></PayPalButton>
+                    <>
+                      {errorPay && (
+                        <MessageBox variant="danger">{errorPay}</MessageBox>
+                      )}
+                      {loadingPay && <LoadingBox />}
+                      <PayPalButton
+                        amount={order.totalPrice}
+                        onSuccess={successPaymentHandler}
+                      ></PayPalButton>
+                    </>
                   )}
                 </li>
               )}
