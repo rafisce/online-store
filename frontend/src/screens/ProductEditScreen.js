@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import Axios from "axios";
 import { detailsProduct, updateProduct } from "../actions/productActions";
 import LoadingBox from "../components/LoadingBox";
 import MessageBox from "../components/MessageBox";
@@ -58,6 +59,34 @@ const ProductEditScreen = (props) => {
       })
     );
   };
+  const [loadingUpload, setLoadingUpload] = useState(false);
+  const [errorUpload, setErrorUpload] = useState("");
+  const [successUpload, setSuccessUpload] = useState("");
+
+  const userSignin = useSelector((state) => state.userSignin);
+  const { userInfo } = userSignin;
+  const uploadFileHandler = async (e) => {
+    const file = e.target.files[0];
+    const bodyFormData = new FormData();
+    bodyFormData.append("image", file);
+    setLoadingUpload(true);
+    try {
+      const { data } = await Axios.post("/api/uploads", bodyFormData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      });
+      setImage(data);
+      setLoadingUpload(false);
+      setSuccessUpload(true);
+      setErrorUpload("");
+    } catch (error) {
+      setErrorUpload(error.message);
+      setLoadingUpload(false);
+      setSuccessUpload(false);
+    }
+  };
   return (
     <div>
       <form className="form" onSubmit={submitHandler}>
@@ -98,12 +127,30 @@ const ProductEditScreen = (props) => {
             <div>
               <label htmlFor="image">תמונה</label>
               <input
+                dir="LTR"
+                className="img"
                 id="image"
                 type="text"
                 placeholder="הכנס תמונה"
                 value={image}
                 onChange={(e) => setImage(e.target.value)}
               ></input>
+            </div>
+            <div>
+              <label htmlFor="imageFile">קובץ תמונה</label>
+              <input
+                type="file"
+                id="imageFile"
+                label="בחר תמונה"
+                onChange={uploadFileHandler}
+              ></input>
+              {loadingUpload && <LoadingBox />}
+              {errorUpload && (
+                <MessageBox variant="danger">{errorUpload}</MessageBox>
+              )}
+              {successUpload && (
+                <MessageBox variant="success">תמונה הועלתה בהצלחה</MessageBox>
+              )}
             </div>
             <div>
               <label htmlFor="countInStock">כמות</label>
