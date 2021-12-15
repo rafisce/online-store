@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Axios from "axios";
+import { useParams } from "react-router-dom";
 import { detailsProduct, updateProduct } from "../actions/productActions";
 import LoadingBox from "../components/LoadingBox";
 import MessageBox from "../components/MessageBox";
 import { PRODUCT_UPDATE_RESET } from "../constants/productConstants";
 
 const ProductEditScreen = (props) => {
-  const productId = props.match.params.id;
+  const params = useParams();
+  const { id: productId } = params;
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [image, setImage] = useState("");
@@ -18,50 +20,50 @@ const ProductEditScreen = (props) => {
 
   const productDetails = useSelector((state) => state.productDetails);
   const { loading, error, product } = productDetails;
+
   const productUpdate = useSelector((state) => state.productUpdate);
   const {
     loading: loadingUpdate,
-    success: successUpdate,
     error: errorUpdate,
+    success: successUpdate,
   } = productUpdate;
-  const dispatch = useDispatch();
 
+  const dispatch = useDispatch();
   useEffect(() => {
     if (successUpdate) {
-      dispatch({ type: PRODUCT_UPDATE_RESET });
       props.history.push("/productlist");
     }
-    if (!product || product._id !== productId) {
+    if (!product || product._id !== productId || successUpdate) {
+      dispatch({ type: PRODUCT_UPDATE_RESET });
       dispatch(detailsProduct(productId));
     } else {
       setName(product.name);
       setPrice(product.price);
       setImage(product.image);
+      setCategory(product.category);
       setCountInStock(product.countInStock);
       setBrand(product.brand);
       setDescription(product.description);
-      setCategory(product.category);
     }
-  }, [dispatch, product, productId, props.history, successUpdate]);
-
+  }, [product, dispatch, productId, successUpdate, props.history]);
   const submitHandler = (e) => {
     e.preventDefault();
+    // TODO: dispatch update product
     dispatch(
       updateProduct({
         _id: productId,
         name,
         price,
+        image,
+        category,
         brand,
         countInStock,
         description,
-        image,
-        category,
       })
     );
   };
   const [loadingUpload, setLoadingUpload] = useState(false);
   const [errorUpload, setErrorUpload] = useState("");
-  const [successUpload, setSuccessUpload] = useState("");
 
   const userSignin = useSelector((state) => state.userSignin);
   const { userInfo } = userSignin;
@@ -79,27 +81,22 @@ const ProductEditScreen = (props) => {
       });
       setImage(data);
       setLoadingUpload(false);
-      setSuccessUpload(true);
-      setErrorUpload("");
     } catch (error) {
       setErrorUpload(error.message);
       setLoadingUpload(false);
-      setSuccessUpload(false);
     }
   };
+
   return (
     <div>
       <form className="form" onSubmit={submitHandler}>
         <div>
-          <h1> ערוך מוצר {productId}</h1>
+          <h1>ערוך מוצר {productId}</h1>
         </div>
-        {loadingUpdate && <LoadingBox />}
+        {loadingUpdate && <LoadingBox></LoadingBox>}
         {errorUpdate && <MessageBox variant="danger">{errorUpdate}</MessageBox>}
-        {successUpdate && (
-          <MessageBox variant="success">מוצר עודכן בהצלחה</MessageBox>
-        )}
         {loading ? (
-          <LoadingBox />
+          <LoadingBox></LoadingBox>
         ) : error ? (
           <MessageBox variant="danger">{error}</MessageBox>
         ) : (
@@ -109,8 +106,8 @@ const ProductEditScreen = (props) => {
               <input
                 id="name"
                 type="text"
-                placeholder="הכנס שם"
-                value={name}
+                placeholder="Enter name"
+                value={name || ""}
                 onChange={(e) => setName(e.target.value)}
               ></input>
             </div>
@@ -119,20 +116,18 @@ const ProductEditScreen = (props) => {
               <input
                 id="price"
                 type="text"
-                placeholder="הכנס מחיר"
-                value={price}
+                placeholder="Enter price"
+                value={price || ""}
                 onChange={(e) => setPrice(e.target.value)}
               ></input>
             </div>
             <div>
               <label htmlFor="image">תמונה</label>
               <input
-                dir="LTR"
-                className="img"
                 id="image"
                 type="text"
-                placeholder="הכנס תמונה"
-                value={image}
+                placeholder="Enter image"
+                value={image || ""}
                 onChange={(e) => setImage(e.target.value)}
               ></input>
             </div>
@@ -141,34 +136,21 @@ const ProductEditScreen = (props) => {
               <input
                 type="file"
                 id="imageFile"
-                label="בחר תמונה"
+                label="Choose Image"
                 onChange={uploadFileHandler}
               ></input>
-              {loadingUpload && <LoadingBox />}
+              {loadingUpload && <LoadingBox></LoadingBox>}
               {errorUpload && (
                 <MessageBox variant="danger">{errorUpload}</MessageBox>
               )}
-              {successUpload && (
-                <MessageBox variant="success">תמונה הועלתה בהצלחה</MessageBox>
-              )}
-            </div>
-            <div>
-              <label htmlFor="countInStock">כמות</label>
-              <input
-                id="countInStock"
-                type="text"
-                placeholder="הכנס כמות"
-                value={countInStock}
-                onChange={(e) => setCountInStock(e.target.value)}
-              ></input>
             </div>
             <div>
               <label htmlFor="category">קטגוריה</label>
               <input
                 id="category"
                 type="text"
-                placeholder="הכנס קטגוריה"
-                value={category}
+                placeholder="Enter category"
+                value={category || ""}
                 onChange={(e) => setCategory(e.target.value)}
               ></input>
             </div>
@@ -177,9 +159,19 @@ const ProductEditScreen = (props) => {
               <input
                 id="brand"
                 type="text"
-                placeholder="הכנס חברה"
-                value={brand}
+                placeholder="Enter brand"
+                value={brand || ""}
                 onChange={(e) => setBrand(e.target.value)}
+              ></input>
+            </div>
+            <div>
+              <label htmlFor="countInStock">כמות במלאי</label>
+              <input
+                id="countInStock"
+                type="text"
+                placeholder="Enter countInStock"
+                value={countInStock || ""}
+                onChange={(e) => setCountInStock(e.target.value)}
               ></input>
             </div>
             <div>
@@ -188,13 +180,13 @@ const ProductEditScreen = (props) => {
                 id="description"
                 rows="3"
                 type="text"
-                placeholder="הכנס תיאור"
-                value={description}
+                placeholder="Enter description"
+                value={description || ""}
                 onChange={(e) => setDescription(e.target.value)}
-              />
+              ></textarea>
             </div>
             <div>
-              <label />
+              <label></label>
               <button className="primary" type="submit">
                 עדכן
               </button>
@@ -205,5 +197,4 @@ const ProductEditScreen = (props) => {
     </div>
   );
 };
-
 export default ProductEditScreen;

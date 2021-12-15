@@ -81,4 +81,20 @@ productRouter.put(
   })
 );
 
+productRouter.delete(
+  "/:id",
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const product = await Product.findById(req.params.id);
+
+    if (product) {
+      const deletedProduct = await product.delete();
+      res.send({ message: "מוצר נמחק", product: deletedProduct });
+    } else {
+      res.status(404).send({ message: "מוצר לא נמצא" });
+    }
+  })
+);
+
 export default productRouter;
