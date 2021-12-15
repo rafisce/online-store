@@ -56,5 +56,29 @@ productRouter.post(
     res.send({ message: "מוצר חדש נוצר", product: createdProduct });
   })
 );
+productRouter.put(
+  "/:id",
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const productId = req.params.id;
+    const product = await Product.findById(productId);
+
+    if (product) {
+      product.name = req.body.name;
+      product.price = req.body.price;
+      product.brand = req.body.brand;
+      product.image = req.body.image;
+      product.countInStock = req.body.countInStock;
+      product.category = req.body.category;
+      product.description = req.body.description;
+
+      const updatedProduct = await product.save();
+      res.send({ message: "מוצר עודכן", product: updatedProduct });
+    } else {
+      res.status(404).send({ message: "מוצר לא נמצא" });
+    }
+  })
+);
 
 export default productRouter;

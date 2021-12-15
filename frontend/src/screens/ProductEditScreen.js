@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
-import { detailsProduct } from "../actions/productActions";
+import { detailsProduct, updateProduct } from "../actions/productActions";
 import LoadingBox from "../components/LoadingBox";
 import MessageBox from "../components/MessageBox";
+import { PRODUCT_UPDATE_RESET } from "../constants/productConstants";
 
-const ProductEditScreen = () => {
-  const params = useParams();
-  const { id: productId } = params;
+const ProductEditScreen = (props) => {
+  const productId = props.match.params.id;
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [image, setImage] = useState("");
@@ -18,9 +17,19 @@ const ProductEditScreen = () => {
 
   const productDetails = useSelector((state) => state.productDetails);
   const { loading, error, product } = productDetails;
+  const productUpdate = useSelector((state) => state.productUpdate);
+  const {
+    loading: loadingUpdate,
+    success: successUpdate,
+    error: errorUpdate,
+  } = productUpdate;
   const dispatch = useDispatch();
 
   useEffect(() => {
+    if (successUpdate) {
+      dispatch({ type: PRODUCT_UPDATE_RESET });
+      props.history.push("/productlist");
+    }
     if (!product || product._id !== productId) {
       dispatch(detailsProduct(productId));
     } else {
@@ -32,10 +41,22 @@ const ProductEditScreen = () => {
       setDescription(product.description);
       setCategory(product.category);
     }
-  }, [dispatch, product, productId]);
+  }, [dispatch, product, productId, props.history, successUpdate]);
 
   const submitHandler = (e) => {
     e.preventDefault();
+    dispatch(
+      updateProduct({
+        _id: productId,
+        name,
+        price,
+        brand,
+        countInStock,
+        description,
+        image,
+        category,
+      })
+    );
   };
   return (
     <div>
@@ -43,6 +64,11 @@ const ProductEditScreen = () => {
         <div>
           <h1> ערוך מוצר {productId}</h1>
         </div>
+        {loadingUpdate && <LoadingBox />}
+        {errorUpdate && <MessageBox variant="danger">{errorUpdate}</MessageBox>}
+        {successUpdate && (
+          <MessageBox variant="success">מוצר עודכן בהצלחה</MessageBox>
+        )}
         {loading ? (
           <LoadingBox />
         ) : error ? (
