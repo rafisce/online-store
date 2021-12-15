@@ -64,6 +64,7 @@ const ProductEditScreen = (props) => {
   };
   const [loadingUpload, setLoadingUpload] = useState(false);
   const [errorUpload, setErrorUpload] = useState("");
+  const [successUpload, setSuccessUpload] = useState(false);
 
   const userSignin = useSelector((state) => state.userSignin);
   const { userInfo } = userSignin;
@@ -81,9 +82,14 @@ const ProductEditScreen = (props) => {
       });
       setImage(data);
       setLoadingUpload(false);
+      setSuccessUpload(true);
+      setTimeout(function () {
+        setSuccessUpload(false);
+      }, 2000);
     } catch (error) {
       setErrorUpload(error.message);
       setLoadingUpload(false);
+      setSuccessUpload(false);
     }
   };
 
@@ -142,6 +148,9 @@ const ProductEditScreen = (props) => {
               {loadingUpload && <LoadingBox></LoadingBox>}
               {errorUpload && (
                 <MessageBox variant="danger">{errorUpload}</MessageBox>
+              )}
+              {successUpload && (
+                <MessageBox variant="success">תמונה הועלתה בהצלחה</MessageBox>
               )}
             </div>
             <div>
