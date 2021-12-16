@@ -1,0 +1,1 @@
+mongodb+srv://user-auth:4QUSEkJdhKb9cgH@cluster0.68kge.mongodb.net/online-store?retryWrites=true&w=majority
