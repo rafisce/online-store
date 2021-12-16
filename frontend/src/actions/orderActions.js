@@ -4,6 +4,12 @@ import {
   ORDER_CREATE_FAIL,
   ORDER_CREATE_REQUEST,
   ORDER_CREATE_SUCCESS,
+  ORDER_DELETE_FAIL,
+  ORDER_DELETE_REQUEST,
+  ORDER_DELETE_SUCCESS,
+  ORDER_DELIVER_FAIL,
+  ORDER_DELIVER_REQUEST,
+  ORDER_DELIVER_SUCCESS,
   ORDER_DETAILS_FAIL,
   ORDER_DETAILS_REQUEST,
   ORDER_DETAILS_SUCCESS,
@@ -95,6 +101,34 @@ export const payOrder =
     }
   };
 
+export const deliverOrder = (orderId) => async (dispatch, getState) => {
+  dispatch({ type: ORDER_DELIVER_REQUEST, payload: orderId });
+  const {
+    userSignin: { userInfo },
+  } = getState();
+  try {
+    const { data } = await Axios.put(
+      `/api/orders/${orderId}/deliver`,
+      {},
+
+      {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      }
+    );
+
+    dispatch({ type: ORDER_DELIVER_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({
+      type: ORDER_DELIVER_FAIL,
+      payload:
+        error.message && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
 export const listOrderMine = () => async (dispatch, getState) => {
   dispatch({ type: ORDER_MINE_LIST_REQUEST });
   const {
@@ -141,6 +175,37 @@ export const listOrders = () => async (dispatch, getState) => {
     dispatch({
       type: ORDER_LIST_FAIL,
       payload: message,
+    });
+  }
+};
+
+export const deleteOrder = (order) => async (dispatch, getState) => {
+  dispatch({
+    type: ORDER_DELETE_REQUEST,
+    payload: order,
+  });
+
+  const {
+    userSignin: { userInfo },
+  } = getState();
+
+  try {
+    await Axios.delete(`/api/orders/${order._id}`, {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    });
+
+    dispatch({
+      type: ORDER_DELETE_SUCCESS,
+    });
+  } catch (error) {
+    dispatch({
+      type: ORDER_DELETE_FAIL,
+      payload:
+        error.message && error.response.data.message
+          ? error.response.data.message
+          : error.message,
     });
   }
 };

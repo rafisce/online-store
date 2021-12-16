@@ -1,22 +1,39 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { listOrders } from "../actions/orderActions";
+import { deleteOrder, listOrders } from "../actions/orderActions";
 import LoadingBox from "../components/LoadingBox";
 import MessageBox from "../components/MessageBox";
 import moment from "moment";
+import { ORDER_DELETE_RESET } from "../constants/orderConstants";
 
 const OrderListScreen = (props) => {
   const orderList = useSelector((state) => state.orderList);
   const { loading, error, orders } = orderList;
+  const orderDelete = useSelector((state) => state.orderDelete);
+  const {
+    loading: loadingDelete,
+    success: successDelete,
+    error: errorDelete,
+  } = orderDelete;
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(listOrders());
-  }, [dispatch]);
 
-  const deleteHandler = (order) => {};
+    if (successDelete) {
+      dispatch({ type: ORDER_DELETE_RESET });
+    }
+  }, [dispatch, successDelete]);
+
+  const deleteHandler = (order) => {
+    if (window.confirm("אתה בטוח שאתה רוצה למחוק את הזמנה זו?")) {
+      dispatch(deleteOrder(order));
+    }
+  };
   return (
     <div>
       <h1>הזמנות</h1>
+      {loadingDelete && <LoadingBox />}
+      {errorDelete && <MessageBox variant="danger">{errorDelete}</MessageBox>}
       {loading ? (
         <LoadingBox />
       ) : error ? (
