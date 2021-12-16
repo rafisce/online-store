@@ -15,7 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 
 const db = mongoURI;
 mongoose
-  .connect(process.env.MONGO_URI || db)
+  .connect(process.env.MONGODB_URL || db)
   .then(() => console.log("database connected successfully"))
   .catch((err) => console.log("database error: " + err));
 
