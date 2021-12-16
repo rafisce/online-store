@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { deleteOrder, listOrders } from "../actions/orderActions";
 import LoadingBox from "../components/LoadingBox";
 import MessageBox from "../components/MessageBox";
@@ -7,6 +8,7 @@ import moment from "moment";
 import { ORDER_DELETE_RESET } from "../constants/orderConstants";
 
 const OrderListScreen = (props) => {
+  const navigate = useNavigate();
   const orderList = useSelector((state) => state.orderList);
   const { loading, error, orders } = orderList;
   const orderDelete = useSelector((state) => state.orderDelete);
@@ -80,7 +82,7 @@ const OrderListScreen = (props) => {
                   <button
                     type="button"
                     className="small"
-                    onClick={() => props.history.push(`/order/${order._id}`)}
+                    onClick={() => navigate(`/order/${order._id}`)}
                   >
                     פרטים
                   </button>

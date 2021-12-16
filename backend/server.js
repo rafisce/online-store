@@ -2,7 +2,6 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import path from "path";
-import { mongoURI } from "../config/keys.js";
 import productRouter from "./routers/productRouter.js";
 import userRouter from "./routers/userRouter.js";
 import orderRouter from "./routers/orderRouter.js";
@@ -13,7 +12,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const db = mongoURI;
+const db = "mongodb://localhost/online-store";
 mongoose
   .connect(process.env.MONGODB_URL || db)
   .then(() => console.log("database connected successfully"))

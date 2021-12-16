@@ -1,15 +1,17 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { saveShippingAddress } from "../actions/cartActions";
 import CheckoutSteps from "../components/CheckoutSteps";
 
 const ShippingAddressScreen = (props) => {
+  const navigate = useNavigate();
   const userSignin = useSelector((state) => state.userSignin);
   const cart = useSelector((state) => state.cart);
   const { shippingAddress } = cart;
   const { userInfo } = userSignin;
   if (!userInfo) {
-    props.history.push("/signin");
+    navigate("/signin");
   }
   const [fullName, setFullName] = useState(shippingAddress.fullName);
   const [address, setAddress] = useState(shippingAddress.address);
@@ -23,7 +25,7 @@ const ShippingAddressScreen = (props) => {
     dispatch(
       saveShippingAddress({ fullName, address, city, zipCode, country })
     );
-    props.history.push("/placeorder");
+    navigate("/placeorder");
   };
 
   return (

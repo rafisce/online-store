@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import {
   createProduct,
   deleteProduct,
@@ -13,6 +14,7 @@ import {
 } from "../constants/productConstants";
 
 const ProductListScreen = (props) => {
+  const navigate = useNavigate();
   const productList = useSelector((state) => state.productList);
   const { loading, error, products } = productList;
 
@@ -33,13 +35,20 @@ const ProductListScreen = (props) => {
   useEffect(() => {
     if (successCreate) {
       dispatch({ type: PRODUCT_CREATE_RESET });
-      props.history.push(`/product/${createdProduct._id}/edit`);
+      navigate(`/product/${createdProduct._id}/edit`);
     }
     if (successDelete) {
       dispatch({ type: PRODUCT_DELETE_RESET });
     }
     dispatch(listProducts());
-  }, [createdProduct, dispatch, props.history, successCreate, successDelete]);
+  }, [
+    createdProduct,
+    dispatch,
+    navigate,
+    props.history,
+    successCreate,
+    successDelete,
+  ]);
 
   const deleteHandler = (product) => {
     if (window.confirm("האם אתה בטוח שאתה רוצה למחוק את מוצר זה?")) {
@@ -91,9 +100,7 @@ const ProductListScreen = (props) => {
                   <button
                     type="button"
                     className="small"
-                    onClick={() =>
-                      props.history.push(`/product/${product._id}/edit`)
-                    }
+                    onClick={() => navigate(`/product/${product._id}/edit`)}
                   >
                     ערוך
                   </button>
