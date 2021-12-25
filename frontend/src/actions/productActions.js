@@ -11,6 +11,10 @@ import {
   PRODUCT_LIST_FAIL,
   PRODUCT_LIST_REQUEST,
   PRODUCT_LIST_SUCCESS,
+  PRODUCT_LIST_UPDATE_FAIL,
+  PRODUCT_LIST_UPDATE_REQUEST,
+  PRODUCT_LIST_UPDATE_RESET,
+  PRODUCT_LIST_UPDATE_SUCCESS,
   PRODUCT_UPDATE_FAIL,
   PRODUCT_UPDATE_REQUEST,
   PRODUCT_UPDATE_SUCCESS,
@@ -149,6 +153,39 @@ export const deleteProduct = (productId) => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: PRODUCT_DELETE_FAIL,
+      payload:
+        error.message && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+export const updateProductList = (order) => async (dispatch, getState) => {
+  dispatch({
+    type: PRODUCT_LIST_UPDATE_REQUEST,
+    payload: order,
+  });
+
+  const {
+    userSignin: { userInfo },
+  } = getState();
+
+  try {
+    const { data } = await Axios.put(`/api/products`, order, {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    });
+
+    dispatch({
+      type: PRODUCT_LIST_UPDATE_SUCCESS,
+      payload: data,
+    });
+    dispatch({ type: PRODUCT_LIST_UPDATE_RESET });
+  } catch (error) {
+    dispatch({
+      type: PRODUCT_LIST_UPDATE_FAIL,
       payload:
         error.message && error.response.data.message
           ? error.response.data.message

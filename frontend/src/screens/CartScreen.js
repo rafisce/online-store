@@ -5,13 +5,15 @@ import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { addToCart, removeFromCart } from "../actions/cartActions";
 import MessageBox from "../components/MessageBox";
 
-const CartScreen = (props) => {
+const CartScreen = () => {
   const navigate = useNavigate();
   const params = useParams();
   const { id: productId } = params;
+
   const { search } = useLocation();
   const qtyInUrl = new URLSearchParams(search).get("qty");
   const qty = qtyInUrl ? Number(qtyInUrl) : 1;
+
   const cart = useSelector((state) => state.cart);
   const { cartItems } = cart;
   const dispatch = useDispatch();
@@ -24,7 +26,7 @@ const CartScreen = (props) => {
     dispatch(removeFromCart(id));
   };
   const checkoutHandler = () => {
-    navigate(`/signin?redirect=shipping`);
+    navigate("/signin?redirect=/shipping");
   };
   return (
     <div className="row top">

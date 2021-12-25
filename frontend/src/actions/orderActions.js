@@ -23,6 +23,7 @@ import {
   ORDER_PAY_REQUEST,
   ORDER_PAY_SUCCESS,
 } from "../constants/orderConstants";
+import { updateProductList } from "./productActions";
 
 export const createOrder = (order) => async (dispatch, getState) => {
   dispatch({ type: ORDER_CREATE_REQUEST, payload: order });
@@ -90,6 +91,7 @@ export const payOrder =
       );
 
       dispatch({ type: ORDER_PAY_SUCCESS, payload: data });
+      dispatch(updateProductList(order));
     } catch (error) {
       dispatch({
         type: ORDER_PAY_FAIL,

@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "build":"cd frontend && npm install &&npm run build",
+    "build": "cd frontend && npm install &&npm run build",
     "start": "node backend/server.js",
     "server": "nodemon --watch backend --exec node --experimental-modules backend/server.js",
     "client": "npm start --prefix frontend",
@@ -21,11 +21,24 @@
     "url": "https://github.com/rafisce/online-store/issues"
   },
   "homepage": "https://github.com/rafisce/online-store#readme",
-  
   "devDependencies": {
     "eslint": "^8.2.0",
     "eslint-plugin-react": "^7.27.0",
     "nodemon": "^2.0.15"
   },
-  "engines":{"node":"12.4.0","npm":"6.9.0"}
+  "engines": {
+    "node": "12.4.0",
+    "npm": "6.9.0"
+  },
+  "dependencies": {
+    "@paypal/react-paypal-js": "^7.5.0",
+    "bcryptjs": "^2.4.3",
+    "concurrently": "^6.5.0",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.2",
+    "express-async-handler": "^1.2.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.1.2",
+    "multer": "^1.4.4"
+  }
 }

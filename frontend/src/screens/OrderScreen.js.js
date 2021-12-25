@@ -2,15 +2,16 @@ import Axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
-import { deliverOrder, detailsOrder, payOrder } from "../actions/orderActions";
+import { deliverOrder, detailsOrder } from "../actions/orderActions";
 import LoadingBox from "../components/LoadingBox";
 import MessageBox from "../components/MessageBox";
-import { PayPalButton } from "react-paypal-button-v2";
+
 import {
   ORDER_DELIVER_RESET,
   ORDER_PAY_RESET,
 } from "../constants/orderConstants";
 import moment from "moment";
+import PayPalComp from "../components/PayPalComp";
 
 const OrderScreen = (props) => {
   const params = useParams();
@@ -62,10 +63,6 @@ const OrderScreen = (props) => {
       }
     }
   }, [dispatch, order, orderId, successDeliver, successPay]);
-
-  const successPaymentHandler = (paymentResult) => {
-    dispatch(payOrder(order, paymentResult));
-  };
 
   const deliverHandler = () => {
     dispatch(deliverOrder(order._id));
@@ -197,10 +194,13 @@ const OrderScreen = (props) => {
                         <MessageBox variant="danger">{errorPay}</MessageBox>
                       )}
                       {loadingPay && <LoadingBox />}
-                      <PayPalButton
+
+                      <PayPalComp
                         amount={order.totalPrice}
-                        onSuccess={successPaymentHandler}
-                      ></PayPalButton>
+                        currency={"ILS"}
+                        cid={process.env.PAYPAL_CLIENT_ID}
+                        o={order}
+                      />
                     </>
                   )}
                 </li>

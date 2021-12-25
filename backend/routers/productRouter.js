@@ -97,4 +97,30 @@ productRouter.delete(
   })
 );
 
+productRouter.put(
+  "/",
+  expressAsyncHandler(async (req, res) => {
+    const products = await Product.find({});
+
+    const items = req.body.orderItems;
+    if (items.length > 0) {
+      for (var i = 0; i < items.length; i++) {
+        for (var j = 0; j < products.length; j++) {
+          if (items[i].product == products[j]._id) {
+            if (items[i].qty <= products[j].countInStock) {
+              products[j].countInStock -= items[i].qty;
+              res.send(products[j]);
+              await products[j].save();
+            } else {
+              const item = items[i];
+              res.send({ message: `כמות גדולה מדי : ${item.qty}`, item });
+            }
+          }
+        }
+      }
+      res.send({ message: "רשימת מוצרים עודכנה" });
+    }
+  })
+);
+
 export default productRouter;
