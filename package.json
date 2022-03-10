@@ -21,7 +21,6 @@
     "url": "https://github.com/rafisce/online-store/issues"
   },
   "homepage": "https://github.com/rafisce/online-store#readme",
-
   "engines": {
     "node": "12.4.0",
     "npm": "6.9.0"
