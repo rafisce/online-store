@@ -4,6 +4,7 @@ import Product from "../components/Product";
 import { listProducts } from "../actions/productActions";
 import LoadingBox from "../components/LoadingBox";
 import MessageBox from "../components/MessageBox";
+import data from "../data";
 
 const HomeScreen = () => {
   const dispatch = useDispatch();
@@ -25,7 +26,7 @@ const HomeScreen = () => {
           <>
             {products.length === 0 && <MessageBox>לא נמצאו מוצרים</MessageBox>}
             <div className="row center">
-              {products.map(
+              {data.products.map(
                 (product) =>
                   product.price > 0 && (
                     <Product key={product._id} product={product}></Product>
