@@ -13,6 +13,8 @@ import {
   PRODUCT_DELETE_RESET,
 } from "../constants/productConstants";
 
+import data from "../data";
+
 const ProductListScreen = (props) => {
   const navigate = useNavigate();
   const productList = useSelector((state) => state.productList);
@@ -90,7 +92,7 @@ const ProductListScreen = (props) => {
             </tr>
           </thead>
           <tbody>
-            {products.map((product) => (
+            {data.products.map((product) => (
               <tr key={product._id}>
                 <td>{product._id}</td>
                 <td>{product.name}</td>

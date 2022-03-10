@@ -1,7 +1,8 @@
 const data = {
   products: [
     {
-      name: "p1",
+      _id:1,
+      name: "מוצר 1",
       category: "cat1",
       countInStock: 1,
       rating: 1,
@@ -11,7 +12,8 @@ const data = {
       description: "d1",
     },
     {
-      name: "p2",
+      _id:2,
+      name: "מוצר 2",
       category: "cat2",
       countInStock: 2,
       rating: 2,
@@ -21,7 +23,8 @@ const data = {
       description: "d2",
     },
     {
-      name: "p3",
+      _id:3,
+      name: "מוצר 3",
       category: "cat3",
       countInStock: 3,
       rating: 3,
@@ -31,7 +34,8 @@ const data = {
       description: "d3",
     },
     {
-      name: "p4",
+      _id:4,
+      name: "מוצר 4",
       category: "cat4",
       countInStock: 4,
       rating: 4,
@@ -41,7 +45,8 @@ const data = {
       description: "d4",
     },
     {
-      name: "p5",
+      _id:5,
+      name: "מוצר 5",
       category: "cat5",
       countInStock: 5,
       rating: 4.5,
@@ -51,7 +56,8 @@ const data = {
       description: "d5",
     },
     {
-      name: "p6",
+      _id:6,
+      name: "מוצר 6",
       category: "cat6",
       countInStock: 6,
       rating: 5,
